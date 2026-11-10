@@ -18,6 +18,7 @@ export class Home {
   profile = this.service.getProfile();
   skills = this.service.getSkills();
   experience = this.service.getExperience();
+  projects = this.service.getProjects();
   likeCount = this.service.getLikeCount();
 
   // Méthode appelée au clic, met à jour un signal

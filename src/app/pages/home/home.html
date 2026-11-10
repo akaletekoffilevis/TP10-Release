@@ -2,26 +2,29 @@
   <div class="card">
     <img src="phtodemoi.png" alt="Photo de {{ profile().name }}" class="photo" />
 
-    <!-- Signaux : les valeurs entre parenthèses () sont des signals suivis par Angular -->
     <h1>{{ profile().title }}</h1>
     <h2>{{ profile().name }}</h2>
+    <p class="subtitle">{{ profile().subtitle }}</p>
     <p class="presentation">{{ profile().presentation }}</p>
 
-    <!-- Template : boucle @for pour afficher chaque compétence -->
-    <div class="skills">
-      <h3>Mes compétences</h3>
+    <div class="contact">
+      <a [href]="'mailto:' + profile().email" class="contact-link">{{ profile().email }}</a>
+      <span class="sep">·</span>
+      <a [href]="profile().github" target="_blank" class="contact-link">GitHub</a>
+      <span class="sep">·</span>
+      <a [href]="profile().linkedin" target="_blank" class="contact-link">LinkedIn</a>
+    </div>
 
-      <!-- @if : condition pour afficher un message si aucune compétence -->
+    <div class="skills">
+      <h3>Compétences</h3>
       @if (skills().length > 0) {
         <div class="tags">
           @for (skill of skills(); track skill) {
-            <!-- Component : composant réutilisable app-skill-card -->
             <app-skill-card [name]="skill" />
           }
         </div>
         <div class="experience">
           <h4>Expérience (années)</h4>
-          <!-- @for : boucle sur l'objet experience via Object.entries -->
           @for (item of experience() | keyvalue; track item.key) {
             <div class="exp-row">
               <span>{{ item.key }}</span>
@@ -37,11 +40,22 @@
       }
     </div>
 
-    <!-- bouton "J'aime" : met à jour un signal au clic -->
+    <div class="projects">
+      <h3>Projets mis en avant</h3>
+      <div class="project-list">
+        @for (p of projects(); track p.name) {
+          <a [href]="p.url" target="_blank" class="project-card">
+            <strong>{{ p.name }}</strong>
+            <span>{{ p.desc }}</span>
+          </a>
+        }
+      </div>
+    </div>
+
     <button class="like-btn" (click)="addLike()">&#128420; J'aime ({{ likeCount() }})</button>
   </div>
 
   <footer class="footer">
-    <p>&copy; 2026 Koffi Levis AKALETE &mdash; <a href="https://github.com/akaletekoffilevis" target="_blank">Mon GitHub</a></p>
+    <p>&copy; 2026 Koffi Lévis AKALETE &mdash; <a href="https://github.com/akaletekoffilevis" target="_blank">Mon GitHub</a></p>
   </footer>
 </div>

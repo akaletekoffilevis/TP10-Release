@@ -5,33 +5,67 @@ import { Injectable, signal } from '@angular/core';
 @Injectable({ providedIn: 'root' })
 export class PortfolioService {
   private readonly profile = signal({
-    name: 'Koffi Levis AKALETE',
-    title: 'Bienvenue sur mon portfolio',
+    name: 'Koffi Lévis AKALETE',
+    title: 'Développeur Full Stack Junior',
+    subtitle: 'C#, .NET, ASP.NET Core, Blazor',
     presentation:
-      "Étudiant en développement d'applications, passionné par les technologies web et le createur de solutions numériques innovantes. Curieux et motivé, je cherche constamment à apprendre et à relever de nouveaux défis."
+      "Développeur Full Stack Junior spécialisé en C#, .NET, ASP.NET Core et Blazor. " +
+      "Ambassadeur 10000 CODEURS. APIs REST sécurisées, applications web et mobiles. " +
+      "Basé à Niamey, Niger. 19 projets open-source, 13 certifications.",
+    location: 'Niamey, Niger',
+    email: 'koffilevis21@gmail.com',
+    phone: '+227 91 53 52 20',
+    github: 'https://github.com/akaletekoffilevis',
+    linkedin: 'https://linkedin.com/in/akalete-koffi-levis',
+    avatar: 'assets/photo.jpg'
   });
 
   // Signal : liste des compétences (source de vérité unique)
   private readonly skills = signal<string[]>([
-    'HTML',
-    'CSS',
-    'JavaScript',
-    'Python',
     'C#',
-    'SQL',
-    'Git'
+    '.NET',
+    'ASP.NET Core',
+    'Blazor',
+    'Entity Framework Core',
+    'SQL Server',
+    'SQLite',
+    'JavaScript',
+    'TypeScript',
+    'React',
+    'Next.js',
+    'Flutter',
+    'Firebase',
+    'Python',
+    'Docker',
+    'Git',
+    'REST APIs',
+    'HTML/CSS'
   ]);
 
-  // Record de temps passé par compétence (fictif, pour la démo)
+  // Record de temps passé par compétence
   private readonly experience = signal<Record<string, number>>({
-    HTML: 3,
-    CSS: 2,
-    JavaScript: 1,
-    Python: 1,
-    'C#': 1,
-    SQL: 1,
-    Git: 1
+    'C#': 3,
+    '.NET': 3,
+    'ASP.NET Core': 2,
+    'Blazor': 2,
+    'JavaScript': 2,
+    'TypeScript': 2,
+    'React': 2,
+    'Python': 2,
+    'Flutter': 1,
+    'Docker': 1,
+    'Git': 3,
+    'SQL': 2
   });
+
+  // Projets mis en avant
+  private readonly projects = signal([
+    { name: 'Scaffolder-CLI', desc: 'CLI universel de génération de projets (.NET 10, AOT)', url: 'https://github.com/akaletekoffilevis/Scaffolder-CLI' },
+    { name: 'Xyro-Cli', desc: 'CLI Xyro', url: 'https://github.com/akaletekoffilevis/Xyro-Cli' },
+    { name: 'youtube-downloader', desc: 'Téléchargeur YouTube', url: 'https://github.com/akaletekoffilevis/youtube-downloader' },
+    { name: 'Bible', desc: 'Application Bible', url: 'https://github.com/akaletekoffilevis/Bible' },
+    { name: 'Serina', desc: 'Projet Serina', url: 'https://github.com/akaletekoffilevis/Serina' },
+  ]);
 
   // Signal : nombre de clics sur le bouton "J'aime"
   private readonly likeCount = signal(0);
@@ -45,6 +79,9 @@ export class PortfolioService {
   }
   getExperience() {
     return this.experience;
+  }
+  getProjects() {
+    return this.projects;
   }
   getLikeCount() {
     return this.likeCount;
