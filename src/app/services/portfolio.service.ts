@@ -61,10 +61,8 @@ export class PortfolioService {
   // Projets mis en avant
   private readonly projects = signal([
     { name: 'Scaffolder-CLI', desc: 'CLI universel de génération de projets (.NET 10, AOT)', url: 'https://github.com/akaletekoffilevis/Scaffolder-CLI' },
-    { name: 'Xyro-Cli', desc: 'CLI Xyro', url: 'https://github.com/akaletekoffilevis/Xyro-Cli' },
     { name: 'youtube-downloader', desc: 'Téléchargeur YouTube', url: 'https://github.com/akaletekoffilevis/youtube-downloader' },
     { name: 'Bible', desc: 'Application Bible', url: 'https://github.com/akaletekoffilevis/Bible' },
-    { name: 'Serina', desc: 'Projet Serina', url: 'https://github.com/akaletekoffilevis/Serina' },
   ]);
 
   // Signal : nombre de clics sur le bouton "J'aime"
