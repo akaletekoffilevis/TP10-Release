@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-      - run: npm ci
+      - run: npm install
       - run: npm run build
 
   # ---------------------------------------------------------------------------
@@ -45,7 +45,7 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-      - run: npm ci
+      - run: npm install
       - run: npx ng test --watch=false
 
   # ---------------------------------------------------------------------------
@@ -62,7 +62,7 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-      - run: npm ci
+      - run: npm install
       - run: npm run build
       - name: Serve and smoke test
         run: |
@@ -85,7 +85,7 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-      - run: npm ci
+      - run: npm install
       - run: npm run build
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
