@@ -1,0 +1,119 @@
+name: TP10 — Tests & Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tp10-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # 1. Build
+  # ---------------------------------------------------------------------------
+  build:
+    name: "1 · Build Angular"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+  # ---------------------------------------------------------------------------
+  # 2. Unit tests (20 tests on PortfolioService)
+  # ---------------------------------------------------------------------------
+  unit-tests:
+    name: "2 · Unit tests (20)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npx ng test --watch=false
+
+  # ---------------------------------------------------------------------------
+  # 3. Integration tests (build + serve + smoke)
+  # ---------------------------------------------------------------------------
+  integration-tests:
+    name: "3 · Integration tests"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Serve and smoke test
+        run: |
+          npx http-server dist/mon-portfolio -p 4200 -s &
+          sleep 5
+          curl -fsS http://localhost:4200/ | grep -q "app-root" && echo "Smoke OK" || (echo "Smoke FAIL"; exit 1)
+
+  # ---------------------------------------------------------------------------
+  # 4. Deploy to Vercel (only if all tests pass)
+  # ---------------------------------------------------------------------------
+  deploy:
+    name: "4 · Deploy to Vercel"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [unit-tests, integration-tests]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          working-directory: ./
+
+  # ---------------------------------------------------------------------------
+  # 5. Récapitulatif
+  # ---------------------------------------------------------------------------
+  recap:
+    name: "5 · Récapitulatif"
+    if: always()
+    needs: [build, unit-tests, integration-tests, deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Écrire le tableau de résultats
+        run: |
+          {
+            echo "## TP10 — Résultats"
+            echo ""
+            echo "| # | Job | Résultat |"
+            echo "|---|---|---|"
+            echo "| 1 | Build Angular | ${{ needs.build.result }} |"
+            echo "| 2 | Unit tests (20) | ${{ needs.unit-tests.result }} |"
+            echo "| 3 | Integration tests | ${{ needs.integration-tests.result }} |"
+            echo "| 4 | Deploy Vercel | ${{ needs.deploy.result }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
